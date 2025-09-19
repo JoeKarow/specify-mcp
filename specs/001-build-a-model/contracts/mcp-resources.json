@@ -1,0 +1,321 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Speckit MCP Server Resources API",
+    "version": "1.0.0",
+    "description": "MCP resource definitions for template and documentation access"
+  },
+  "components": {
+    "schemas": {
+      "TemplateResource": {
+        "type": "object",
+        "required": ["id", "type", "content", "version"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Template identifier (e.g., 'spec-v1')"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["spec", "plan", "tasks", "research"],
+            "description": "Template type"
+          },
+          "content": {
+            "type": "string",
+            "description": "Template markdown content"
+          },
+          "version": {
+            "type": "string",
+            "description": "Template version"
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required template variables"
+          },
+          "sections": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Template section names"
+          }
+        }
+      },
+      "DocumentationResource": {
+        "type": "object",
+        "required": ["path", "title", "content", "category"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Resource path (e.g., 'docs://quickstart')"
+          },
+          "title": {
+            "type": "string",
+            "description": "Document title"
+          },
+          "content": {
+            "type": "string",
+            "description": "Document markdown content"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["guide", "reference", "tutorial", "api"],
+            "description": "Documentation category"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Document tags for search"
+          }
+        }
+      },
+      "ConfigurationResource": {
+        "type": "object",
+        "required": ["path", "schema", "defaults"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Configuration path (e.g., 'config://constitution')"
+          },
+          "schema": {
+            "type": "object",
+            "description": "JSON schema for configuration validation"
+          },
+          "defaults": {
+            "type": "object",
+            "description": "Default configuration values"
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Example configurations"
+          }
+        }
+      },
+      "WorkflowResource": {
+        "type": "object",
+        "required": ["name", "description", "steps"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": ["specify", "plan", "tasks"],
+            "description": "Workflow name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Workflow description"
+          },
+          "steps": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "order": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "description": "Workflow execution steps"
+          },
+          "prerequisites": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required prerequisites"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/resources/templates/{type}": {
+      "get": {
+        "summary": "Get template by type",
+        "operationId": "get_template",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["spec", "plan", "tasks", "research"]
+            },
+            "description": "Template type"
+          },
+          {
+            "name": "version",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Specific template version"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Template retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Template not found"
+          }
+        }
+      }
+    },
+    "/resources/documentation/{category}": {
+      "get": {
+        "summary": "Get documentation by category",
+        "operationId": "get_documentation",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["guide", "reference", "tutorial", "api"]
+            },
+            "description": "Documentation category"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Filter by tags"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Documentation retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DocumentationResource"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/configuration/{name}": {
+      "get": {
+        "summary": "Get configuration schema and defaults",
+        "operationId": "get_configuration",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["constitution", "config", "tasks"]
+            },
+            "description": "Configuration name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Configuration retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigurationResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Configuration not found"
+          }
+        }
+      }
+    },
+    "/resources/workflows": {
+      "get": {
+        "summary": "List available workflows",
+        "operationId": "list_workflows",
+        "responses": {
+          "200": {
+            "description": "Workflows retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkflowResource"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/workflows/{name}": {
+      "get": {
+        "summary": "Get specific workflow details",
+        "operationId": "get_workflow",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["specify", "plan", "tasks"]
+            },
+            "description": "Workflow name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workflow retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowResource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workflow not found"
+          }
+        }
+      }
+    }
+  }
+}
