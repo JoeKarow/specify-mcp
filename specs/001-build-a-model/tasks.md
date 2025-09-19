@@ -51,11 +51,11 @@
 
 ### Contract Tests for MCP Tools
 
-- [ ] T006 [P] Contract test for specify tool in tests/contract/test_specify_tool.py (create branch, generate spec)
-- [ ] T007 [P] Contract test for plan tool in tests/contract/test_plan_tool.py (generate implementation plan)
-- [ ] T008 [P] Contract test for tasks tool in tests/contract/test_tasks_tool.py (create task breakdown)
-- [ ] T009 [P] Contract test for initialize_project tool in tests/contract/test_initialize_tool.py (setup constitution.yaml)
-- [ ] T010 [P] Contract test for get_context tool in tests/contract/test_context_tool.py (retrieve phase-specific docs)
+- [x] T006 [P] Contract test for specify tool in tests/contract/test_specify_tool.py (create branch, generate spec)
+- [x] T007 [P] Contract test for plan tool in tests/contract/test_plan_tool.py (generate implementation plan)
+- [x] T008 [P] Contract test for tasks tool in tests/contract/test_tasks_tool.py (create task breakdown)
+- [x] T009 [P] Contract test for initialize_project tool in tests/contract/test_initialize_tool.py (setup constitution.yaml)
+- [x] T010 [P] Contract test for get_context tool in tests/contract/test_context_tool.py (retrieve phase-specific docs)
 
 ### Contract Tests for MCP Resources
 
