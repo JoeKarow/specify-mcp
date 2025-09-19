@@ -59,10 +59,10 @@
 
 ### Contract Tests for MCP Resources
 
-- [ ] T011 [P] Contract test for template resources in tests/contract/test_template_resources.py (spec, plan, tasks templates)
-- [ ] T012 [P] Contract test for documentation resources in tests/contract/test_documentation_resources.py (guides, references)
-- [ ] T013 [P] Contract test for configuration resources in tests/contract/test_configuration_resources.py (constitution schema)
-- [ ] T014 [P] Contract test for workflow resources in tests/contract/test_workflow_resources.py (specify, plan, tasks workflows)
+- [x] T011 [P] Contract test for template resources in tests/contract/test_template_resources.py (spec, plan, tasks templates)
+- [x] T012 [P] Contract test for documentation resources in tests/contract/test_documentation_resources.py (guides, references)
+- [x] T013 [P] Contract test for configuration resources in tests/contract/test_configuration_resources.py (constitution schema)
+- [x] T014 [P] Contract test for workflow resources in tests/contract/test_workflow_resources.py (specify, plan, tasks workflows)
 
 ### Integration Tests
 
