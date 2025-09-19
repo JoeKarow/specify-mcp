@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from fastmcp import FastMCP
+from fastmcp import FastMCP, Resource
 from pydantic import BaseModel, Field
 
 from speckit_mcp import __version__
@@ -119,12 +119,42 @@ def create_server() -> FastMCP:
     mcp.tool(get_context)
     logger.debug("Registered tool: get_context")
 
-    # Register resources (to be implemented in T036-T039)
+    # Register resources (T036-T039)
     logger.debug("Registering MCP resources...")
-    # TODO: T036 - Register template resources
-    # TODO: T037 - Register documentation resources
-    # TODO: T038 - Register configuration resources
-    # TODO: T039 - Register workflow resources
+
+    # Import resource handlers
+    from speckit_mcp.resources.templates import serve_template, list_template_resources
+    from speckit_mcp.resources.documentation import serve_documentation, list_documentation_resources
+    from speckit_mcp.resources.configuration import serve_configuration, list_configuration_resources
+    from speckit_mcp.resources.workflows import serve_workflow, list_workflow_resources
+
+    # T036 - Register template resources
+    @mcp.resource("mcp://speckit/templates/{template_type}")
+    async def get_template(uri: str) -> Resource:
+        """Serve template resources."""
+        return await serve_template(uri)
+    logger.debug("Registered resource: templates")
+
+    # T037 - Register documentation resources
+    @mcp.resource("mcp://speckit/docs/{category}/{name}")
+    async def get_documentation(uri: str) -> Resource:
+        """Serve documentation resources."""
+        return await serve_documentation(uri)
+    logger.debug("Registered resource: documentation")
+
+    # T038 - Register configuration resources
+    @mcp.resource("mcp://speckit/config/{type}/{name}")
+    async def get_configuration(uri: str) -> Resource:
+        """Serve configuration resources."""
+        return await serve_configuration(uri)
+    logger.debug("Registered resource: configuration")
+
+    # T039 - Register workflow resources
+    @mcp.resource("mcp://speckit/workflows/{workflow_name}")
+    async def get_workflow(uri: str) -> Resource:
+        """Serve workflow resources."""
+        return await serve_workflow(uri)
+    logger.debug("Registered resource: workflows")
 
     logger.info("Server initialization complete")
     return mcp

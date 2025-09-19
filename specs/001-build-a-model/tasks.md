@@ -104,10 +104,10 @@
 
 ### MCP Resource Implementations
 
-- [ ] T036 Implement template resources in src/speckit_mcp/resources/templates.py (serve spec, plan, tasks templates)
-- [ ] T037 Implement documentation resources in src/speckit_mcp/resources/documentation.py (serve guides and references)
-- [ ] T038 Implement configuration resources in src/speckit_mcp/resources/configuration.py (serve schema and defaults)
-- [ ] T039 Implement workflow resources in src/speckit_mcp/resources/workflows.py (serve workflow definitions)
+- [x] T036 Implement template resources in src/speckit_mcp/resources/templates.py (serve spec, plan, tasks templates)
+- [x] T037 Implement documentation resources in src/speckit_mcp/resources/documentation.py (serve guides and references)
+- [x] T038 Implement configuration resources in src/speckit_mcp/resources/configuration.py (serve schema and defaults)
+- [x] T039 Implement workflow resources in src/speckit_mcp/resources/workflows.py (serve workflow definitions)
 
 ## Phase 3.4: Integration
 
