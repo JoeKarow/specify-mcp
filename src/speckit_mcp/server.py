@@ -86,13 +86,38 @@ def create_server() -> FastMCP:
     # Log server metadata
     logger.debug(f"Server metadata: name=speckit-mcp, version={__version__}")
 
-    # Register tools (to be implemented in T031-T035)
+    # Register tools
     logger.debug("Registering MCP tools...")
-    # TODO: T031 - Register specify tool
-    # TODO: T032 - Register plan tool
-    # TODO: T033 - Register tasks tool
-    # TODO: T034 - Register initialize_project tool
-    # TODO: T035 - Register get_context tool
+
+    # Import and register all MCP tools
+    from speckit_mcp.tools import (
+        specify,
+        plan,
+        tasks,
+        initialize_project,
+        get_context
+    )
+
+    # Register each tool with the MCP server
+    # T031 - Specify tool for creating feature specifications
+    mcp.tool(specify)
+    logger.debug("Registered tool: specify")
+
+    # T032 - Plan tool for generating implementation plans
+    mcp.tool(plan)
+    logger.debug("Registered tool: plan")
+
+    # T033 - Tasks tool for creating task breakdowns
+    mcp.tool(tasks)
+    logger.debug("Registered tool: tasks")
+
+    # T034 - Initialize tool for project setup
+    mcp.tool(initialize_project)
+    logger.debug("Registered tool: initialize_project")
+
+    # T035 - Context tool for phase-specific documentation
+    mcp.tool(get_context)
+    logger.debug("Registered tool: get_context")
 
     # Register resources (to be implemented in T036-T039)
     logger.debug("Registering MCP resources...")

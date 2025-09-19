@@ -96,11 +96,11 @@
 
 ### MCP Tool Implementations
 
-- [ ] T031 Implement specify tool in src/speckit_mcp/tools/specify.py (create branch, generate spec from template)
-- [ ] T032 Implement plan tool in src/speckit_mcp/tools/plan.py (analyze spec, generate plan artifacts)
-- [ ] T033 Implement tasks tool in src/speckit_mcp/tools/tasks.py (create structured task YAML from plan)
-- [ ] T034 Implement initialize_project tool in src/speckit_mcp/tools/initialize.py (create .specify-mcp/constitution.yaml)
-- [ ] T035 Implement get_context tool in src/speckit_mcp/tools/context.py (serve phase-specific documentation)
+- [x] T031 Implement specify tool in src/speckit_mcp/tools/specify.py (create branch, generate spec from template)
+- [x] T032 Implement plan tool in src/speckit_mcp/tools/plan.py (analyze spec, generate plan artifacts)
+- [x] T033 Implement tasks tool in src/speckit_mcp/tools/tasks.py (create structured task YAML from plan)
+- [x] T034 Implement initialize_project tool in src/speckit_mcp/tools/initialize.py (create .specify-mcp/constitution.yaml)
+- [x] T035 Implement get_context tool in src/speckit_mcp/tools/context.py (serve phase-specific documentation)
 
 ### MCP Resource Implementations
 
