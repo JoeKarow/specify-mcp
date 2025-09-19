@@ -244,8 +244,9 @@ def create_server() -> FastMCP:
             except Exception as e:
                 perf_logger.warning(f"Resource preload failed: {e}")
 
-        # Start preloading task (don't wait for completion)
-        asyncio.create_task(preload_critical_resources())
+        # Note: Resource preloading will be handled by FastMCP when event loop is available
+        # The preload_critical_resources function is defined but not called here to avoid
+        # "no running event loop" error. FastMCP will handle resource loading internally.
 
         # Log total initialization time
         total_time = time.time() - start_time
