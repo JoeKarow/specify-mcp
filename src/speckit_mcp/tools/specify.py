@@ -5,8 +5,10 @@ This module implements the specify tool that creates feature branches,
 generates specifications from templates, and manages the spec workflow.
 """
 
+import logging
 import os
 import re
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any
@@ -24,6 +26,10 @@ from speckit_mcp.config.manager import ConfigurationManager
 from speckit_mcp.resources.template_manager import TemplateManager
 from speckit_mcp.resources.models import TemplateType
 from speckit_mcp.utils.file_ops import safe_write, ensure_directory
+
+# Set up logger for this module
+logger = logging.getLogger("speckit_mcp.tools.specify")
+perf_logger = logging.getLogger("speckit_mcp.performance")
 
 
 def _generate_feature_id() -> str:
@@ -89,16 +95,22 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
     Raises:
         McpError: If repository validation fails or spec generation fails
     """
+    start_time = time.time()
+    logger.info(f"Starting specify tool - description: '{description[:50]}...', repo: {repository_path}")
+
     try:
         # Validate repository path
+        logger.debug("Validating repository path")
         repo_path = Path(repository_path)
         if not repo_path.exists():
+            logger.error(f"Repository path does not exist: {repository_path}")
             raise McpError(
                 code=-32602,  # Invalid params
                 message=f"Repository path does not exist: {repository_path}"
             )
 
         if not repo_path.is_dir():
+            logger.error(f"Repository path is not a directory: {repository_path}")
             raise McpError(
                 code=-32602,
                 message=f"Repository path is not a directory: {repository_path}"
@@ -106,6 +118,7 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
 
         # Check if it's a git repository
         if not is_git_repo(str(repo_path)):
+            logger.error(f"Not a git repository: {repository_path}")
             raise McpError(
                 code=-32602,
                 message=f"Not a git repository: {repository_path}"
@@ -117,8 +130,10 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
             repo_root = str(repo_path)
 
         # Load configuration
+        logger.debug("Loading project configuration")
         config_manager = ConfigurationManager(repo_root)
         config = config_manager.load_configuration()
+        logger.debug(f"Configuration loaded - workflows enabled: {list(config.workflows.keys())}")
 
         # Check if specify workflow is enabled
         workflow_config = config.workflows.get('specify')
@@ -131,18 +146,22 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
         # Generate feature ID and branch name
         feature_id = _generate_feature_id()
         feature_slug = _slugify(description[:50])  # Use first 50 chars for slug
+        logger.info(f"Generated feature ID: {feature_id}")
 
         # Use branch prefix from config or default
         branch_prefix = workflow_config.branch_prefix or "feature/"
         branch_name = f"{branch_prefix}{feature_id}-{feature_slug}"
+        logger.debug(f"Creating branch: {branch_name}")
 
         # Create feature branch
         branch_result = create_branch(repo_root, branch_name)
         if not branch_result.get('success'):
+            logger.error(f"Failed to create branch: {branch_result.get('message', 'Unknown error')}")
             raise McpError(
                 code=-32603,
                 message=f"Failed to create branch: {branch_result.get('message', 'Unknown error')}"
             )
+        logger.info(f"Successfully created branch: {branch_name}")
 
         # Create specs directory
         specs_dir = Path(repo_root) / '.specify-mcp' / 'specs'
@@ -167,6 +186,7 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
         # Write specification file
         spec_filename = f"{feature_id}-spec.md"
         spec_path = specs_dir / spec_filename
+        logger.debug(f"Writing specification to: {spec_path}")
 
         written_path = safe_write(
             spec_path,
@@ -174,6 +194,7 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
             base_path=repo_root,
             overwrite=False
         )
+        logger.info(f"Specification written to: {written_path}")
 
         # Add and commit the specification
         if config.settings.get('auto_commit', True):
@@ -190,7 +211,14 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
 
                 if not commit_result.get('success'):
                     # Log warning but don't fail the operation
-                    print(f"Warning: Could not commit specification: {commit_result.get('message')}")
+                    logger.warning(f"Could not commit specification: {commit_result.get('message')}")
+                else:
+                    logger.info(f"Committed specification with message: {commit_message}")
+
+        # Log performance metrics
+        elapsed_time = time.time() - start_time
+        perf_logger.info(f"specify tool completed in {elapsed_time:.3f}s - feature_id: {feature_id}")
+        logger.info(f"Successfully created specification for feature {feature_id}")
 
         return {
             'success': True,
@@ -200,11 +228,15 @@ async def specify(description: str, repository_path: str) -> Dict[str, Any]:
             'message': f"Created specification for feature {feature_id} in branch {branch_name}"
         }
 
-    except McpError:
-        # Re-raise MCP errors as-is
+    except McpError as e:
+        # Log and re-raise MCP errors
+        elapsed_time = time.time() - start_time
+        logger.error(f"MCP error in specify tool after {elapsed_time:.3f}s: {e.message}")
         raise
     except Exception as e:
-        # Wrap other exceptions in McpError
+        # Log and wrap other exceptions in McpError
+        elapsed_time = time.time() - start_time
+        logger.error(f"Unexpected error in specify tool after {elapsed_time:.3f}s: {str(e)}", exc_info=True)
         raise McpError(
             code=-32603,  # Internal error
             message=f"Specification generation failed: {str(e)}",

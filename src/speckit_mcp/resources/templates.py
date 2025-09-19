@@ -5,12 +5,16 @@ This module provides MCP resources for serving specification, plan, and task tem
 with YAML front matter processing and metadata support.
 """
 
+import logging
 from typing import Dict, Any, Optional
-from fastmcp import Resource
+from fastmcp.resources import Resource
 from fastmcp.exceptions import McpError
 
 from speckit_mcp.resources.template_manager import TemplateManager, TemplateError
 from speckit_mcp.resources.models import TemplateType
+
+# Set up logger for this module
+logger = logging.getLogger("speckit_mcp.resources.templates")
 
 
 class TemplateResources:
@@ -39,16 +43,26 @@ class TemplateResources:
             McpError: If template type is invalid or template cannot be loaded
         """
         # Validate template type
+        logger.debug(f"Loading template resource: {template_type}")
         try:
             template_enum = TemplateType(template_type.lower())
         except ValueError:
-            raise McpError(f"Invalid template type: {template_type}")
+            logger.error(f"Invalid template type requested: {template_type}")
+            raise McpError(
+                code=-32602,  # Invalid params
+                message=f"Invalid template type: {template_type}"
+            )
 
         # Load template
         try:
             template = self.template_manager.get_template(template_enum)
+            logger.info(f"Successfully loaded template: {template.name}")
         except TemplateError as e:
-            raise McpError(f"Failed to load template: {e}")
+            logger.error(f"Failed to load template {template_type}: {e}")
+            raise McpError(
+                code=-32001,  # Resource not found (custom)
+                message=f"Failed to load template: {e}"
+            )
 
         # Extract front matter for metadata
         front_matter = template.extract_front_matter() or {}
@@ -115,6 +129,7 @@ async def serve_template(uri: str) -> Resource:
     """
     Serve a template resource based on URI.
 
+    T041: Comprehensive error handling for resource serving
     Expected URI format: mcp://speckit/templates/{template_type}
 
     Args:
@@ -126,14 +141,21 @@ async def serve_template(uri: str) -> Resource:
     Raises:
         McpError: If URI is invalid or template not found
     """
+    logger.debug(f"Serving template resource for URI: {uri}")
+
     # Parse URI to extract template type
     if not uri.startswith("mcp://speckit/templates/"):
-        raise McpError(f"Invalid template URI: {uri}")
+        logger.error(f"Invalid template URI format: {uri}")
+        raise McpError(
+            code=-32602,  # Invalid params
+            message=f"Invalid template URI: {uri}"
+        )
 
     template_type = uri.replace("mcp://speckit/templates/", "")
 
     if not template_type:
         # Return list of templates
+        logger.info("Listing all available templates")
         templates = await _template_resources.list_templates()
         return Resource(
             uri="mcp://speckit/templates",
@@ -150,6 +172,7 @@ async def serve_template(uri: str) -> Resource:
             }
         )
 
+    logger.info(f"Fetching template: {template_type}")
     return await _template_resources.get_template_resource(template_type)
 
 

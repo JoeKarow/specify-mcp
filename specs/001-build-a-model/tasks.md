@@ -111,9 +111,9 @@
 
 ## Phase 3.4: Integration
 
-- [ ] T040 Connect all tools and resources to MCP server in src/speckit_mcp/server.py with proper registration
-- [ ] T041 Implement error handling and MCPError responses across all tools with proper error codes
-- [ ] T042 Add comprehensive logging to ~/.specify-mcp/logs/ with rotation and debug levels
+- [x] T040 Connect all tools and resources to MCP server in src/speckit_mcp/server.py with proper registration ✓
+- [x] T041 Implement error handling and MCPError responses across all tools with proper error codes ✓
+- [x] T042 Add comprehensive logging to ~/.specify-mcp/logs/ with rotation and debug levels ✓
 
 ## Phase 3.5: Polish
 

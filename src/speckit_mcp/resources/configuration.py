@@ -7,15 +7,13 @@ defaults, and validation rules.
 
 from typing import Dict, Any, Optional, List
 import json
-from fastmcp import Resource
+from fastmcp.resources import Resource
 from fastmcp.exceptions import McpError
 
 from speckit_mcp.config.models import (
     ProjectConfiguration,
-    WorkflowConfiguration,
-    WorkflowType,
-    TemplateConfiguration,
-    RulesConfiguration
+    WorkflowConfig,
+    WorkflowType
 )
 
 

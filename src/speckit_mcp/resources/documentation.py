@@ -6,7 +6,7 @@ with phase-specific filtering and metadata support.
 """
 
 from typing import Dict, Any, Optional, List
-from fastmcp import Resource
+from fastmcp.resources import Resource
 from fastmcp.exceptions import McpError
 
 from speckit_mcp.resources.models import (

@@ -5,7 +5,9 @@ This module implements the plan tool that analyzes specifications
 and generates detailed implementation plans with tech stack and phases.
 """
 
+import logging
 import re
+import time
 import yaml
 from datetime import datetime
 from pathlib import Path
@@ -16,6 +18,10 @@ from speckit_mcp.config.manager import ConfigurationManager
 from speckit_mcp.resources.template_manager import TemplateManager
 from speckit_mcp.resources.models import TemplateType
 from speckit_mcp.utils.file_ops import safe_read, safe_write, ensure_directory
+
+# Set up logger for this module
+logger = logging.getLogger("speckit_mcp.tools.plan")
+perf_logger = logging.getLogger("speckit_mcp.performance")
 
 
 def _extract_feature_id_from_spec(spec_path: str) -> Optional[str]:
@@ -160,10 +166,15 @@ async def plan(spec_path: str, repository_path: str) -> Dict[str, Any]:
     Raises:
         McpError: If spec file not found or plan generation fails
     """
+    start_time = time.time()
+    logger.info(f"Starting plan tool - spec: {spec_path}, repo: {repository_path}")
+
     try:
         # Validate paths
+        logger.debug("Validating paths")
         spec_file = Path(spec_path)
         if not spec_file.exists():
+            logger.error(f"Specification file not found: {spec_path}")
             raise McpError(
                 code=-32602,  # Invalid params
                 message=f"Specification file not found: {spec_path}"
@@ -171,6 +182,7 @@ async def plan(spec_path: str, repository_path: str) -> Dict[str, Any]:
 
         repo_path = Path(repository_path)
         if not repo_path.exists():
+            logger.error(f"Repository path does not exist: {repository_path}")
             raise McpError(
                 code=-32602,
                 message=f"Repository path does not exist: {repository_path}"

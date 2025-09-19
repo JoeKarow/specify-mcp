@@ -8,7 +8,7 @@ step sequences, validation rules, and state tracking.
 from typing import Dict, Any, Optional, List
 import json
 from enum import Enum
-from fastmcp import Resource
+from fastmcp.resources import Resource
 from fastmcp.exceptions import McpError
 
 
