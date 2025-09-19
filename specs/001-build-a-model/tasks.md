@@ -75,12 +75,12 @@
 
 ### Pydantic Models
 
-- [ ] T019 [P] ProjectConfiguration model in src/speckit_mcp/config/models.py with YAML validation
-- [ ] T020 [P] WorkflowSession model in src/speckit_mcp/config/models.py with state transitions
-- [ ] T021 [P] Template model in src/speckit_mcp/resources/models.py with markdown validation
-- [ ] T022 [P] Task model in src/speckit_mcp/config/models.py with dependency tracking
-- [ ] T023 [P] ContextDocument model in src/speckit_mcp/resources/models.py with phase filtering
-- [ ] T024 [P] RepositoryRegistration model in src/speckit_mcp/config/models.py with path validation
+- [x] T019 [P] ProjectConfiguration model in src/speckit_mcp/config/models.py with YAML validation
+- [x] T020 [P] WorkflowSession model in src/speckit_mcp/config/models.py with state transitions
+- [x] T021 [P] Template model in src/speckit_mcp/resources/models.py with markdown validation
+- [x] T022 [P] Task model in src/speckit_mcp/config/models.py with dependency tracking
+- [x] T023 [P] ContextDocument model in src/speckit_mcp/resources/models.py with phase filtering
+- [x] T024 [P] RepositoryRegistration model in src/speckit_mcp/config/models.py with path validation
 
 ### Core Modules
 
