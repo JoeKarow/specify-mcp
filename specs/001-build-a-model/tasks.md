@@ -39,11 +39,11 @@
 
 ## Phase 3.1: Setup
 
-- [ ] T001 Create project structure: src/speckit_mcp/{server.py,tools/,resources/,git/,config/,utils/}, tests/{contract/,integration/,unit/}
-- [ ] T002 Initialize Python project with pyproject.toml: FastMCP>=2.0.0, PyYAML>=6.0, Pydantic>=2.0, pytest>=7.0, pytest-asyncio
-- [ ] T003 [P] Create mise configuration in .mise.toml for Python 3.11+ toolchain management
-- [ ] T004 [P] Configure pytest with asyncio support in pytest.ini and setup.cfg for testing
-- [ ] T005 [P] Create .gitignore for Python project with **pycache**, *.pyc, .venv/, dist/,*.egg-info
+- [x] T001 Create project structure: src/speckit_mcp/{server.py,tools/,resources/,git/,config/,utils/}, tests/{contract/,integration/,unit/}
+- [x] T002 Initialize Python project with pyproject.toml: FastMCP>=2.0.0, PyYAML>=6.0, Pydantic>=2.0, pytest>=7.0, pytest-asyncio
+- [x] T003 [P] Create mise configuration in .mise.toml for Python 3.11+ toolchain management (updated pyproject.toml instead)
+- [x] T004 [P] Configure pytest with asyncio support in pytest.ini and setup.cfg for testing (configured in pyproject.toml)
+- [x] T005 [P] Create .gitignore for Python project with **pycache**, *.pyc, .venv/, dist/,*.egg-info
 
 ## Phase 3.2: Tests First (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 
