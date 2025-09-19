@@ -180,7 +180,8 @@ def create_server() -> FastMCP:
         logger.info("Registering MCP resources...")
         resource_start = time.time()
 
-        # Import resource handlers
+        # Import resource handlers (preload for performance)
+        import asyncio
         from speckit_mcp.resources.templates import serve_template, list_template_resources
         from speckit_mcp.resources.documentation import serve_documentation, list_documentation_resources
         from speckit_mcp.resources.configuration import serve_configuration, list_configuration_resources
@@ -224,6 +225,27 @@ def create_server() -> FastMCP:
 
         resource_time = time.time() - resource_start
         perf_logger.info(f"Resource registration completed in {resource_time:.3f}s")
+
+        # Preload frequently accessed resources for better performance
+        async def preload_critical_resources():
+            """Preload frequently accessed resources to improve first-access performance."""
+            preload_start = time.time()
+            try:
+                # Preload resource lists in parallel for optimal performance
+                await asyncio.gather(
+                    list_template_resources(),
+                    list_documentation_resources(),
+                    list_configuration_resources(),
+                    list_workflow_resources(),
+                    return_exceptions=True  # Continue even if some fail
+                )
+                preload_time = time.time() - preload_start
+                perf_logger.info(f"Critical resources preloaded in {preload_time:.3f}s")
+            except Exception as e:
+                perf_logger.warning(f"Resource preload failed: {e}")
+
+        # Start preloading task (don't wait for completion)
+        asyncio.create_task(preload_critical_resources())
 
         # Log total initialization time
         total_time = time.time() - start_time

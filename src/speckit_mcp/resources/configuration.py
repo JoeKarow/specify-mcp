@@ -721,9 +721,18 @@ async def list_configuration_resources() -> List[Resource]:
     Returns:
         List of available configuration resources
     """
+    import asyncio
+
+    # Use asyncio.gather for concurrent resource loading for better performance
+    schemas_task = _configuration_resources.list_schemas()
+    defaults_task = _configuration_resources.list_defaults()
+
+    # Load schemas and defaults concurrently
+    schemas, defaults = await asyncio.gather(schemas_task, defaults_task)
+
     resources = []
-    resources.extend(await _configuration_resources.list_schemas())
-    resources.extend(await _configuration_resources.list_defaults())
+    resources.extend(schemas)
+    resources.extend(defaults)
 
     # Add constitution template
     resources.append(Resource(

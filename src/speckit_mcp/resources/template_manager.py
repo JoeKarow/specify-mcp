@@ -5,7 +5,9 @@ This module handles loading embedded templates from package resources,
 parsing YAML front matter, and performing variable substitution.
 """
 
+import logging
 import re
+import time
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -13,6 +15,9 @@ import yaml
 from importlib import resources
 
 from .models import Template, TemplateType
+
+# Performance logger for tracking slow operations
+perf_logger = logging.getLogger('speckit_mcp.performance')
 
 
 class TemplateError(Exception):
@@ -509,7 +514,7 @@ variables:
         custom_path: Optional[str] = None
     ) -> Template:
         """
-        Get a template by type.
+        Get a template by type with performance tracking.
 
         Args:
             template_type: Type of template to retrieve
@@ -521,10 +526,15 @@ variables:
         Raises:
             TemplateError: If template cannot be loaded
         """
-        # Check cache first
+        start_time = time.time()
+
+        # Check cache first for optimal performance
         cache_key = f"{template_type.value}:{custom_path or 'embedded'}"
         if cache_key in self._template_cache:
+            perf_logger.debug(f"Template cache hit for {cache_key}")
             return self._template_cache[cache_key]
+
+        perf_logger.debug(f"Template cache miss for {cache_key}, loading...")
 
         # Load template content
         if custom_path:
@@ -562,6 +572,13 @@ variables:
 
         # Cache the template
         self._template_cache[cache_key] = template
+
+        # Log performance metrics for slow operations
+        duration = time.time() - start_time
+        if duration > 0.1:  # Log operations taking more than 100ms
+            perf_logger.warning(f"Slow template load: {cache_key} took {duration:.3f}s")
+        else:
+            perf_logger.debug(f"Template loaded: {cache_key} in {duration:.3f}s")
 
         return template
 

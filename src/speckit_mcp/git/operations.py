@@ -73,6 +73,9 @@ def _run_git_command(
             command,
             "git command not found"
         )
+    except GitOperationError:
+        # Re-raise GitOperationError without modification
+        raise
     except Exception as e:
         raise GitOperationError(
             f"Failed to execute git command: {e}",
