@@ -66,10 +66,10 @@
 
 ### Integration Tests
 
-- [ ] T015 [P] Integration test for complete specify workflow in tests/integration/test_specify_workflow.py
-- [ ] T016 [P] Integration test for git operations in tests/integration/test_git_operations.py (branch creation, status)
-- [ ] T017 [P] Integration test for configuration inheritance in tests/integration/test_config_inheritance.py
-- [ ] T018 [P] Integration test for concurrent repository operations in tests/integration/test_concurrent_repos.py
+- [x] T015 [P] Integration test for complete specify workflow in tests/integration/test_specify_workflow.py
+- [x] T016 [P] Integration test for git operations in tests/integration/test_git_operations.py (branch creation, status)
+- [x] T017 [P] Integration test for configuration inheritance in tests/integration/test_config_inheritance.py
+- [x] T018 [P] Integration test for concurrent repository operations in tests/integration/test_concurrent_repos.py
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
 
