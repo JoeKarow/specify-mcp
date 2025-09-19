@@ -10,11 +10,18 @@ from .models import (
     DocumentVisibility
 )
 
+# Import template manager
+from .template_manager import TemplateManager, TemplateError
+
 __all__ = [
+    # Models
     'Template',
     'ContextDocument',
     'TemplateType',
     'DocumentType',
     'DevelopmentPhase',
-    'DocumentVisibility'
+    'DocumentVisibility',
+    # Manager
+    'TemplateManager',
+    'TemplateError'
 ]

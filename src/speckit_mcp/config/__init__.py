@@ -16,7 +16,11 @@ from .models import (
     GitConfig
 )
 
+# Import manager
+from .manager import ConfigurationManager, ConfigurationError
+
 __all__ = [
+    # Models
     'ProjectConfiguration',
     'WorkflowSession',
     'Task',
@@ -28,5 +32,8 @@ __all__ = [
     'ProjectInfo',
     'Principle',
     'WorkflowConfig',
-    'GitConfig'
+    'GitConfig',
+    # Manager
+    'ConfigurationManager',
+    'ConfigurationError'
 ]

@@ -84,10 +84,10 @@
 
 ### Core Modules
 
-- [ ] T025 Git operations module in src/speckit_mcp/git/operations.py with subprocess.run() for cross-platform git commands
-- [ ] T026 Configuration manager in src/speckit_mcp/config/manager.py with YAML safe_load and Pydantic validation
-- [ ] T027 Template manager in src/speckit_mcp/resources/template_manager.py with embedded template loading
-- [ ] T028 File operations utilities in src/speckit_mcp/utils/file_ops.py with path validation and safe I/O
+- [x] T025 Git operations module in src/speckit_mcp/git/operations.py with subprocess.run() for cross-platform git commands
+- [x] T026 Configuration manager in src/speckit_mcp/config/manager.py with YAML safe_load and Pydantic validation
+- [x] T027 Template manager in src/speckit_mcp/resources/template_manager.py with embedded template loading
+- [x] T028 File operations utilities in src/speckit_mcp/utils/file_ops.py with path validation and safe I/O
 
 ### MCP Server Setup
 
