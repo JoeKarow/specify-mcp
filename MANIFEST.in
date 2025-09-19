@@ -1,0 +1,33 @@
+# Include package metadata and documentation
+include README.md
+include QUICKSTART.md
+include LICENSE
+include CLAUDE.md
+include pyproject.toml
+
+# Include all source code
+recursive-include src *.py
+
+# Include templates and resources
+recursive-include src/speckit_mcp/resources *.md *.yaml *.json *.txt
+
+# Include test files (for development installations)
+recursive-include tests *.py
+
+# Include configuration files
+include mise.toml
+include .gitignore
+
+# Include specification directories
+recursive-include specs *.md *.yaml *.json
+
+# Exclude unwanted files
+exclude .coverage
+exclude htmlcov
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * *.egg-info
+recursive-exclude .git *
+recursive-exclude .pytest_cache *
+recursive-exclude .venv *
+recursive-exclude htmlcov *

@@ -1,0 +1,394 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Speckit MCP Server Tools API",
+    "version": "1.0.0",
+    "description": "MCP tool definitions for centralized spec-kit functionality"
+  },
+  "components": {
+    "schemas": {
+      "SpecifyRequest": {
+        "type": "object",
+        "required": ["description", "repository_path"],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Feature description for specification generation"
+          },
+          "repository_path": {
+            "type": "string",
+            "description": "Absolute path to target git repository"
+          },
+          "branch_prefix": {
+            "type": "string",
+            "description": "Optional branch name prefix",
+            "default": null
+          }
+        }
+      },
+      "SpecifyResponse": {
+        "type": "object",
+        "required": ["success", "branch_name", "spec_path"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether specification was created successfully"
+          },
+          "branch_name": {
+            "type": "string",
+            "description": "Created feature branch name"
+          },
+          "spec_path": {
+            "type": "string",
+            "description": "Path to generated specification file"
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Workflow session identifier"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if success is false"
+          }
+        }
+      },
+      "PlanRequest": {
+        "type": "object",
+        "required": ["spec_path", "repository_path"],
+        "properties": {
+          "spec_path": {
+            "type": "string",
+            "description": "Path to feature specification file"
+          },
+          "repository_path": {
+            "type": "string",
+            "description": "Absolute path to target git repository"
+          },
+          "technical_context": {
+            "type": "object",
+            "description": "Optional technical implementation details"
+          }
+        }
+      },
+      "PlanResponse": {
+        "type": "object",
+        "required": ["success", "plan_path", "artifacts"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether plan was generated successfully"
+          },
+          "plan_path": {
+            "type": "string",
+            "description": "Path to generated plan file"
+          },
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of generated artifact paths"
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Workflow session identifier"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if success is false"
+          }
+        }
+      },
+      "TasksRequest": {
+        "type": "object",
+        "required": ["plan_path", "repository_path"],
+        "properties": {
+          "plan_path": {
+            "type": "string",
+            "description": "Path to implementation plan file"
+          },
+          "repository_path": {
+            "type": "string",
+            "description": "Absolute path to target git repository"
+          },
+          "group_parallel": {
+            "type": "boolean",
+            "description": "Whether to identify parallel task groups",
+            "default": true
+          }
+        }
+      },
+      "TasksResponse": {
+        "type": "object",
+        "required": ["success", "tasks_path", "task_count"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether tasks were generated successfully"
+          },
+          "tasks_path": {
+            "type": "string",
+            "description": "Path to generated tasks file"
+          },
+          "task_count": {
+            "type": "integer",
+            "description": "Number of tasks generated"
+          },
+          "parallel_groups": {
+            "type": "integer",
+            "description": "Number of parallel execution groups"
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Workflow session identifier"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if success is false"
+          }
+        }
+      },
+      "InitializeProjectRequest": {
+        "type": "object",
+        "required": ["repository_path"],
+        "properties": {
+          "repository_path": {
+            "type": "string",
+            "description": "Absolute path to git repository"
+          },
+          "project_name": {
+            "type": "string",
+            "description": "Optional project name"
+          },
+          "auto_detect": {
+            "type": "boolean",
+            "description": "Auto-detect project settings",
+            "default": true
+          }
+        }
+      },
+      "InitializeProjectResponse": {
+        "type": "object",
+        "required": ["success", "config_path", "is_new"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether initialization succeeded"
+          },
+          "config_path": {
+            "type": "string",
+            "description": "Path to constitution.yaml"
+          },
+          "is_new": {
+            "type": "boolean",
+            "description": "Whether new config was created"
+          },
+          "has_legacy": {
+            "type": "boolean",
+            "description": "Whether legacy spec-kit detected"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if success is false"
+          }
+        }
+      },
+      "GetContextRequest": {
+        "type": "object",
+        "required": ["repository_path", "phase"],
+        "properties": {
+          "repository_path": {
+            "type": "string",
+            "description": "Absolute path to git repository"
+          },
+          "phase": {
+            "type": "string",
+            "enum": ["research", "design", "implement", "validate"],
+            "description": "Current development phase"
+          },
+          "workflow": {
+            "type": "string",
+            "enum": ["specify", "plan", "tasks"],
+            "description": "Current workflow type"
+          }
+        }
+      },
+      "GetContextResponse": {
+        "type": "object",
+        "required": ["success", "documents"],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether context retrieval succeeded"
+          },
+          "documents": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "Document type"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Document content"
+                },
+                "priority": {
+                  "type": "integer",
+                  "description": "Display priority"
+                }
+              }
+            }
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if success is false"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/tools/specify": {
+      "post": {
+        "summary": "Create feature specification",
+        "operationId": "specify",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecifyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Specification created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecifyResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/plan": {
+      "post": {
+        "summary": "Generate implementation plan",
+        "operationId": "plan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plan generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/tasks": {
+      "post": {
+        "summary": "Generate task breakdown",
+        "operationId": "tasks",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TasksRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tasks generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TasksResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/initialize": {
+      "post": {
+        "summary": "Initialize project configuration",
+        "operationId": "initialize_project",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitializeProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project initialized successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitializeProjectResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/context": {
+      "post": {
+        "summary": "Get phase-specific context",
+        "operationId": "get_context",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetContextRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Context retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetContextResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
