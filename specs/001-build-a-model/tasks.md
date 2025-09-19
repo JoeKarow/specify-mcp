@@ -91,8 +91,8 @@
 
 ### MCP Server Setup
 
-- [ ] T029 Main MCP server initialization in src/speckit_mcp/server.py with FastMCP stdio transport
-- [ ] T030 Server **main** entry point in src/speckit_mcp/**main**.py for python -m execution
+- [x] T029 Main MCP server initialization in src/speckit_mcp/server.py with FastMCP stdio transport
+- [x] T030 Server **main** entry point in src/speckit_mcp/**main**.py for python -m execution
 
 ### MCP Tool Implementations
 
